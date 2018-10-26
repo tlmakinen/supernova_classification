@@ -25,15 +25,17 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn.model_selection import cross_val_score
 
+from patsy import dmatrices  # neat helper module from patsy
+
 def log_indiv_selection_fn(phi_i, selection_param):
     coefs = np.array(selection_param)
     position = np.array([*phi_i, 1])
     argument = np.dot(coefs, position)
-    return scipy.stats.norm.logcdf(np.sqrt(np.pi/8)*argument)# must be a logcdf so it dies/grows to 0/1 at the right speed
+    # must be a logcdf so it dies/grows to 0/1 at the right speed
+    return scipy.stats.norm.logcdf(np.sqrt(np.pi/8)*argument)
 
 def generateCoeffs(data_all, data_sel):
         # First take a look at regression on the whole dataset
-    from patsy import dmatrices  # neat helper module from patsy
     Z, phi = dmatrices('selection_tag ~ S2mB + S2c + S2x1', data_all, return_type = 'dataframe')
     # define model, and set parameter regularization to a minimum --> WHY??
     log_model = LogisticRegression(fit_intercept = False, C = 1e9)
@@ -121,7 +123,7 @@ def plotSelectionFunction(smeartype, data_all, data_sel, figpath=None):
     #plt.legend(loc='best')
     #plt.savefig(fname='/mnt/c/Users/lucas/Documents/Fall2018/Imperial_2018/JP2/plots', dpi='figure')
     plt.show()
-    
+
     # save figure
     if figpath is not None:
-        plt.savefig(figpath, dpi='figure')
+        fig.savefig(figpath, dpi='figure')
