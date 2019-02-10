@@ -6,7 +6,7 @@ def fitresCleanup(fname):
     with open(fname, 'r') as f:
         dat = f.readlines()
 
-    varlabels = dat[6]
+    varlabels = dat[12]
     dat[12] = varlabels # add variable labels right on top of data
 
     fname = fname[:-7] + "_selected" + '.FITRES' 
@@ -17,6 +17,21 @@ def fitresCleanup(fname):
         for line in dat[13:]:
             if 'SN' in line:             # remove blank lines
                 newf.write("%s" % line)  # write output
+
+def clean_chains(fname):
+    with open(fname, 'r', encoding='utf-8', errors='ignore') as f:
+        dat = f.readlines()  
+
+    #with open(path, 'rb') as f:
+        #dat = f.read()
+
+    newfname = 'mod' + fname
+
+    with open(newfname, 'w') as newf:
+
+        for line in dat[10:]:        # keep only data (no blank lines or sim headers)
+            if line.startswith('0'):
+                newf.write("%s" % line)  # write data output
 
 
 # for cleaning up bulk SN file
@@ -38,28 +53,28 @@ def simgenFileCleanup(fname):
                 newf.write("%s" % line)  # write data output
 
 
-def createSNeSelected(fname, path):
+def createSNeFiles(fname, path, filenewname, nfiles):
     with open(fname, 'r') as f:
         dat = f.readlines()
 
     varlabels = dat[0]
 
-    nfiles = 10      # how many times we want to sample the FITOPT data
+    nfiles = nfiles      # how many times we want to sample the FITOPT data
 
     samplespace = len(dat)
     numobs = 511    # 511 SNe per sample
 
-    start_indx = 1   # start from the first line of data
+    #start_indx = 1   # start from the first line of data
     
     for i in range(nfiles):
         # select 511 random SNe from a sample space len(FITOPT_FILE) long.
-        #randomindx = np.random.choice(a=np.arange(samplespace), size=numobs, replace=False)
-        index = np.arange(start = start_indx, stop = start_indx + numobs)
-        sampled = np.asarray(dat)[index]
+        randomindx = np.random.choice(a=np.arange(samplespace), size=numobs, replace=False)
+        #index = np.arange(start = start_indx, stop = start_indx + numobs)
+        sampled = np.asarray(dat)[randomindx]
 
-        start_indx += numobs
+        #start_indx += numobs
 
-        newfname = path + 'selected_{}.txt'.format(i+1)  # label each new sample
+        newfname = path + '{}_{}.txt'.format(filenewname, i+1)  # label each new sample
         with open(newfname, 'w') as newf:
 
             newf.write("%s" % dat[0])    # write in the varname header 

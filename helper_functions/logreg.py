@@ -105,12 +105,12 @@ def plotSelectionFunction(smeartype, data_all, data_sel, figpath=None):
 
     for i in range(len(axs)):
         # plot missed SNe
-        axs[i].scatter(phi_test[par_tags[i]].iloc[missed_mask_true], 
-                        phi_test['selection_prediction'].iloc[missed_mask_true], 
+        axs[i].scatter(phi_test[par_tags[i]].iloc[missed_mask_true][::5], 
+                        phi_test['selection_prediction'].iloc[missed_mask_true][::5], 
                                 color='r', marker = '.', alpha=1, s=3, label='missed')
         
         # plot selected SNe
-        axs[i].scatter(phi_test[par_tags[i]].iloc[select_mask_true], phi_test['selection_prediction'].iloc[select_mask_true], 
+        axs[i].scatter(phi_test[par_tags[i]].iloc[select_mask_true][::5], phi_test['selection_prediction'].iloc[select_mask_true][::5], 
                     color='b', marker = '.', alpha=1, s=3, label='selected')
         
         # restrict xlims to observed SNe    
